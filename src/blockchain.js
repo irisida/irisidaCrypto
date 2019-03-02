@@ -1,18 +1,18 @@
-const Block = require("./block");
-const cryptoHash = require("./crypto-hash");
+const Block = require('./block')
+const cryptoHash = require('./crypto-hash')
 
 class Blockchain {
   constructor() {
-    this.chain = [Block.genesis()];
+    this.chain = [Block.genesis()]
   }
 
   addBlock({ data }) {
     const newBlock = Block.mineBlock({
       lastBlock: this.chain[this.chain.length - 1],
-      data
-    });
+      data,
+    })
 
-    this.chain.push(newBlock);
+    this.chain.push(newBlock)
   }
 
   static isValidChain(chain) {
@@ -22,7 +22,7 @@ class Blockchain {
      * they are two differnet objects.
      */
     if (JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())) {
-      return false;
+      return false
     }
 
     for (let i = 1; i < chain.length; i++) {
@@ -31,11 +31,11 @@ class Blockchain {
        * mismatches. This verifies the lastHash integrity
        * of the chain under validation checks.
        */
-      const { timestamp, lastHash, hash, data } = chain[i];
-      const actualLastHash = chain[i - 1].hash;
+      const { timestamp, lastHash, hash, data } = chain[i]
+      const actualLastHash = chain[i - 1].hash
 
       if (lastHash !== actualLastHash) {
-        return false;
+        return false
       }
 
       /**
@@ -44,15 +44,15 @@ class Blockchain {
        * To do so we measure a computed hash against the
        * stored hash.
        */
-      const validatedHash = cryptoHash(timestamp, lastHash, data);
+      const validatedHash = cryptoHash(timestamp, lastHash, data)
 
       if (hash !== validatedHash) {
-        return false;
+        return false
       }
     }
 
-    return true;
+    return true
   }
 }
 
-module.exports = Blockchain;
+module.exports = Blockchain
