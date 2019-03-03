@@ -16,6 +16,16 @@ class Blockchain {
   }
 
   replaceChain(chain) {
+    /**
+     * The business rules behind the chain replacement
+     * mechanism are that a chain can only be replaced
+     * where:
+     * 1: The chain is longer than the existing chain
+     * in order that no blocks are lost.
+     * 2: The chain must be deemed as being valid when
+     * tested against any tampering of the blocks or
+     * chain content.
+     */
     if (chain.length <= this.chain.length) {
       console.error('The incoming chain must be longer')
       return
