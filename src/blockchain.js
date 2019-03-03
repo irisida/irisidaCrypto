@@ -56,7 +56,7 @@ class Blockchain {
        * mismatches. This verifies the lastHash integrity
        * of the chain under validation checks.
        */
-      const { timestamp, lastHash, hash, data } = chain[i]
+      const { timestamp, lastHash, hash, data, nonce, difficulty } = chain[i]
       const actualLastHash = chain[i - 1].hash
 
       if (lastHash !== actualLastHash) {
@@ -69,7 +69,13 @@ class Blockchain {
        * To do so we measure a computed hash against the
        * stored hash.
        */
-      const validatedHash = cryptoHash(timestamp, lastHash, data)
+      const validatedHash = cryptoHash(
+        timestamp,
+        lastHash,
+        data,
+        nonce,
+        difficulty
+      )
 
       if (hash !== validatedHash) {
         return false
