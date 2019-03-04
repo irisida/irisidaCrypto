@@ -1,9 +1,9 @@
 const Block = require('../src/block')
 const cryptoHash = require('../src/crypto-hash')
-const { GENESIS_DATA } = require('../config/config')
+const { GENESIS_DATA, MINE_RATE } = require('../config/config')
 
 describe('Block', () => {
-  const timestamp = 'a-date'
+  const timestamp = 2000
   const lastHash = 'dummyLastHash'
   const hash = 'dummyHash'
   const data = ['blockchain', 'dummyData']
@@ -43,7 +43,13 @@ describe('Block', () => {
   })
 
   /**
-   * genesis block
+   * Genesis block
+   * Checks that the initial block
+   * of the chain is an instance of the
+   * genesis block.
+   * Checks that the data in the chain
+   * genesis block is equal to the
+   * defined genesis block data.
    */
   describe('genesis()', () => {
     const genesisBlock = Block.genesis()
@@ -59,6 +65,18 @@ describe('Block', () => {
 
   /**
    * mine block
+   * Checks that the new block mined is a
+   * correct instance of our block class.
+   * Checks that the new mined block has a
+   * valid lastHash for the preceeding block
+   * (genesis block in this case).
+   * Checks that the block can be set to have
+   * the data property equal to the data from
+   * the mined block.
+   * Checks the the timestamp is not left unset
+   * (undefined)
+   * Checks it can create a SHA-256 hash based
+   * on the properties of the block.
    */
   describe('mineBlock()', () => {
     const lastBlock = Block.genesis()
@@ -97,6 +115,47 @@ describe('Block', () => {
       expect(minedBlock.hash.substring(0, minedBlock.difficulty)).toEqual(
         '0'.repeat(minedBlock.difficulty)
       )
+    })
+
+    it('adjusts the difficulty', () => {
+      const possibleResults = [
+        lastBlock.difficulty + 1,
+        lastBlock.difficulty - 1,
+      ]
+
+      expect(possibleResults.includes(minedBlock.difficulty)).toBe(true)
+    })
+  })
+
+  /**
+   * block mining tests
+   */
+  describe('adjustedDifficulty()', () => {
+    it('raises the difficulty for a quickly mined block', () => {
+      expect(
+        Block.adjustDifficulty({
+          originalBlock: block,
+          timestamp: block.timestamp + MINE_RATE - 100,
+        })
+      ).toEqual(block.difficulty + 1)
+    })
+
+    it('lowers the difficulty for a slowly mined block', () => {
+      expect(
+        Block.adjustDifficulty({
+          originalBlock: block,
+          timestamp: block.timestamp + MINE_RATE + 100,
+        })
+      ).toEqual(block.difficulty - 1)
+    })
+
+    it('has a lower limit of 1', () => {
+      block.difficulty = -1
+      expect(
+        Block.adjustDifficulty({
+          originalBlock: block,
+        })
+      ).toEqual(1)
     })
   })
 })
