@@ -128,7 +128,25 @@ describe('Block', () => {
   })
 
   /**
-   * block mining tests
+   * block difficulty tests
+   * Checks that the system can dynamically
+   * update the difficulty level based on
+   * checks against the time it has taken to
+   * mine a block against the desired time to
+   * mine a block.
+   * Checks that the difficuty rate is increased
+   * where a block is mined too fast in comparison
+   * to the mining rate stored in the config.
+   * Checks that the difficulty rate is reduced
+   * where a block is mined too slowly by
+   * comparison to the preferred rate stored in
+   * the config.
+   * Checks the edge case where a number of
+   * blocks are mined in rapid succession and
+   * the difficulty rate could theoretically
+   * reach a negative number. Setting a lower
+   * tolerance limit prevents that case and the
+   * subsequent crash that it would cause.
    */
   describe('adjustedDifficulty()', () => {
     it('raises the difficulty for a quickly mined block', () => {
