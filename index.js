@@ -15,7 +15,7 @@ const app = express()
 const blockchain = new Blockchain()
 
 /**
- * middleware
+ * middleware section
  * adds json capabilities.
  */
 app.use(bodyParser.json())
