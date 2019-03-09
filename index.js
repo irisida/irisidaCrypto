@@ -20,8 +20,6 @@ const pubsub = new PubSub({ blockchain })
 const DEFAULT_PORT = 3000
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`
 
-setTimeout(() => pubsub.broadcastChain(), 1000)
-
 /**
  * middleware section
  * adds json capabilities.
@@ -94,9 +92,13 @@ app.listen(PORT, () => {
   console.log(`listening at localhost: ${PORT}`)
 
   /**
-   * call syncChains to ensure that the node receives
-   * the latest/longest version of the verified chain
-   * from the rootNode.
+   * Check that we are not the root node and where it
+   * confrms that the node is a peer node then call
+   * the syncChains function to ensure that the node
+   * receives the latest/longest version of the
+   * verified chain from the rootNode.
    */
-  syncChains()
+  if (PORT !== DEFAULT_PORT) {
+    syncChains()
+  }
 })

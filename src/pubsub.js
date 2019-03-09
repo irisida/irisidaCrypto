@@ -53,8 +53,21 @@ class PubSub {
     })
   }
 
+  /**
+   * Creates a three step process where the local node
+   * unsubscribes to the channel prior to publishing, this
+   * is done to prevent it publishing to itself given it's
+   * subscribed to the channel. Then the publish is done
+   * and the closing action is to resubscribe to the
+   * channel to ensure receiving other node published
+   * blocks to be able to sync/update the chain.
+   */
   publish({ channel, message }) {
-    this.publisher.publish(channel, message)
+    this.subscriber.unsubscribe(channel, () => {
+      this.publisher.publish(channel, message, () => {
+        this.subscriber.subscribe(channel)
+      })
+    })
   }
 
   /**
