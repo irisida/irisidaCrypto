@@ -8,6 +8,7 @@
  */
 
 const express = require('express')
+const request = require('request')
 const bodyParser = require('body-parser')
 const Blockchain = require('./src/blockchain')
 const PubSub = require('./src/PubSub')
@@ -15,6 +16,9 @@ const PubSub = require('./src/PubSub')
 const app = express()
 const blockchain = new Blockchain()
 const pubsub = new PubSub({ blockchain })
+
+const DEFAULT_PORT = 3000
+const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`
 
 setTimeout(() => pubsub.broadcastChain(), 1000)
 
@@ -50,6 +54,26 @@ app.post('/api/mine', (req, res) => {
 })
 
 /**
+ * syncChains
+ * Functions allows new nodes to the network to sync
+ * with the root node which will have the latest/longest
+ * verson of the chain.
+ */
+const syncChains = () => {
+  request(
+    { url: `${ROOT_NODE_ADDRESS}/api/blocks` },
+    (error, response, body) => {
+      if (!error && response.statusCode === 200) {
+        const rootChain = JSON.parse(body)
+
+        console.log('replace chain on a sync with ', rootChain)
+        blockchain.replaceChain(rootChain)
+      }
+    }
+  )
+}
+
+/**
  * create the listener function.
  * The function takes the port and a shring to log to the console
  * the listening status of the application.
@@ -59,8 +83,6 @@ app.post('/api/mine', (req, res) => {
  * a peer will be generated and used. Where a running instance
  * of the default port is not found then it will use the default.
  */
-
-const DEFAULT_PORT = 3000
 let PEER_PORT
 
 if (process.env.GENERATE_PEER_PORT === 'true') {
@@ -70,4 +92,11 @@ if (process.env.GENERATE_PEER_PORT === 'true') {
 const PORT = PEER_PORT || DEFAULT_PORT
 app.listen(PORT, () => {
   console.log(`listening at localhost: ${PORT}`)
+
+  /**
+   * call syncChains to ensure that the node receives
+   * the latest/longest version of the verified chain
+   * from the rootNode.
+   */
+  syncChains()
 })
