@@ -1,4 +1,4 @@
-const Blockchain = require('./blockchain')
+const Blockchain = require('../src/blockchain/blockchain')
 
 const blockchain = new Blockchain()
 blockchain.addBlock({ data: 'initialBlock' })
