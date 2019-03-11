@@ -1,4 +1,4 @@
-const Wallet = require('./wallet')
+const Wallet = require('./index')
 
 describe('Wallet', () => {
   let wallet
