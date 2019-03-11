@@ -1,6 +1,6 @@
-const Blockchain = require('../../src/blockchain/blockchain')
-const Block = require('../../src/blockchain/block')
-const cryptoHash = require('../../src/helpers/crypto-hash')
+const Blockchain = require('./index')
+const Block = require('./block')
+const cryptoHash = require('../util/crypto-hash')
 
 /**
  * blockchain class unit test cases
