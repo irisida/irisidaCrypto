@@ -1,6 +1,5 @@
 const { STARTING_BALANCE } = require('../../config/config')
-const cryptoHash = require('../util/crypto-hash')
-const { ec } = require('../util/elliptic')
+const { ec, cryptoHash } = require('../util/elliptic')
 
 /**
  * the Wallet class has the following properties:
