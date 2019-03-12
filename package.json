@@ -12,7 +12,8 @@
     "stop-redis": "redis-cli shutdown"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "verbose": true
   },
   "keywords": [],
   "author": "Ed Leonard",
@@ -25,7 +26,8 @@
     "hex-to-binary": "^1.0.1",
     "prettier": "^1.16.4",
     "redis": "^2.8.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "jest": "^24.3.0",
