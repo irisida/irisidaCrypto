@@ -1,5 +1,6 @@
 const Wallet = require('./index')
 const { verifySignature } = require('../util/elliptic')
+const Transaction = require('./transaction')
 
 describe('Wallet', () => {
   let wallet
@@ -37,6 +38,41 @@ describe('Wallet', () => {
           signature: new Wallet().sign(data),
         })
       ).toBe(false)
+    })
+  })
+
+  describe('createTransaction', () => {
+    describe('and the amount exceeds the balance', () => {
+      it('throws an error', () => {
+        expect(() =>
+          wallet.createTransaction({
+            amount: 999999,
+            recipient: 'dodgy-recipient',
+          })
+        ).toThrow('Amount exceeds balance')
+      })
+    })
+
+    describe('and the amount is valid', () => {
+      let transaction, amount, recipient
+
+      beforeEach(() => {
+        amount = 50
+        recipient = 'dodgy-recipient'
+        transaction = wallet.createTransaction({ amount, recipient })
+      })
+
+      it('creates an instance of `Transaction`', () => {
+        expect(transaction instanceof Transaction).toBe(true)
+      })
+
+      it('matches the transaction input with the wallet', () => {
+        expect(transaction.input.address).toEqual(wallet.publicKey)
+      })
+
+      it('outputs the amount to the recipient', () => {
+        expect(transaction.outputMap[recipient]).toEqual(amount)
+      })
     })
   })
 })
