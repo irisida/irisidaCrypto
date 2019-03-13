@@ -1,10 +1,11 @@
 const cryptoHash = require('./crypto-hash')
+const sampleValue = 'irisida'
+const sha256SampleHash =
+  'bda43d7a0f2d824d662ffe78c910a153c3ae517d093f22be96da57adccea63c7'
 
 describe('cryptoHash()', () => {
-  it('geneates a SHA-256 hashed output', () => {
-    expect(cryptoHash('irisida')).toEqual(
-      'bda43d7a0f2d824d662ffe78c910a153c3ae517d093f22be96da57adccea63c7'
-    )
+  it('generates a SHA-256 hashed output', () => {
+    expect(cryptoHash(sampleValue)).toEqual(sha256SampleHash)
   })
 
   it('produces the same hash with arguments in any order', () => {
