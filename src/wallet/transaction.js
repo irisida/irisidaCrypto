@@ -41,13 +41,49 @@ class Transaction {
     }
   }
 
+  /**
+   * The update function is required to take care
+   * of the following cases:
+   * If the anount in the update exceeds the senderWallet
+   * balance then an error is thrown.
+   * If the recipient of the update does not exist in the
+   * output map it should be added and for tha amount that
+   * was passed.
+   * If the recipient was already found in the outputMap
+   * then the amount is added to the existing amount for
+   * that recipient.
+   * The update should also ensure that the senderwallet
+   * publickKey(ie remaining balance) has had the amount
+   * value subtracted.
+   * It will then cll the createInput method which will
+   * provide a timestamp, new senderwallet balance, a
+   * publicKey and a signature which is a signed outputMap
+   */
   update({ senderWallet, recipient, amount }) {
-    this.outputMap[recipient] = amount
+    if (amount > this.outputMap[senderWallet.publicKey]) {
+      throw new Error('Amount exceeds balance')
+    }
+
+    if (!this.outputMap[recipient]) {
+      this.outputMap[recipient] = amount
+    } else {
+      this.outputMap[recipient] += amount
+    }
+
     this.outputMap[senderWallet.publicKey] -= amount
 
     this.input = this.createInput({ senderWallet, outputMap: this.outputMap })
   }
 
+  /**
+   * performs some transaction checks to ensure
+   * that the operation amount is the same value
+   * as the outputTotal, this validates the
+   * transaction.
+   * The second check is to ensure the transaction
+   * has a valid signature. This relies on the
+   * verifySignature method from the util library.
+   */
   static validTransaction(transaction) {
     const { input, outputMap } = transaction
     const { address, amount, signature } = input
