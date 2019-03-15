@@ -106,8 +106,10 @@ class Transaction {
     }
 
     /**
-     * checks have passed and the transaction is
-     * deemed as a valid case, thereefore true.
+     * positive and valid transaction by this stage.
+     * checks have passed and as such the transaction
+     * is deemed as a valid case, thereefore true.
+     * we return with true in this event.
      */
     return true
   }

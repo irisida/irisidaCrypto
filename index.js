@@ -2,9 +2,7 @@
  * root of the express server for the blockchain
  * project.
  * creates new instance of express and the Blockchain itself
- * and listen on a port (to be fixed later)
- * url of /api/blocks will fire a get request to haul back
- * the blocks data of the chain.
+ * and listen on a port (to be fixed later).
  */
 
 const express = require('express')
@@ -31,7 +29,8 @@ const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`
 app.use(bodyParser.json())
 
 /**
- * API get handler for the blockchain blocks.
+ * url of /api/blocks will fire a get request to haul back
+ * the blocks data of the chain.
  */
 app.get('/api/blocks', (req, res) => {
   res.json(blockchain.chain)
@@ -56,7 +55,16 @@ app.post('/api/mine', (req, res) => {
 })
 
 /**
- * API post handler for adding a new transaction
+ * API post handler for adding a new transaction.
+ * The body of the request is destructured to obtain
+ * the amount and recipient.
+ * The transaction is then set to the result of a check
+ * against the senderWallet.publicKey to determine if
+ * an existing transaction is found. If found then the
+ * transaction is updated. If not then a new transaction
+ * is created.
+ * In the event a new transaction was created it is then
+ * added to the transactionPool.
  */
 app.post('/api/transact', (req, res) => {
   const { amount, recipient } = req.body
@@ -83,7 +91,7 @@ app.post('/api/transact', (req, res) => {
 
 /**
  * syncChains
- * Functions allows new nodes to the network to sync
+ * Function allows new nodes on the network to sync
  * with the root node which will have the latest/longest
  * verson of the chain.
  */
