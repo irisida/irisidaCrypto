@@ -95,12 +95,14 @@ app.get('/api/transaction-pool-map', (req, res) => {
 })
 
 /**
- * syncChains
+ * syncWithRootState
  * Function allows new nodes on the network to sync
  * with the root node which will have the latest/longest
  * verson of the chain.
+ *
+ * it will also set the transactionPoolMap data.
  */
-const syncChains = () => {
+const syncWithRootState = () => {
   request(
     { url: `${ROOT_NODE_ADDRESS}/api/blocks` },
     (error, response, body) => {
@@ -109,6 +111,22 @@ const syncChains = () => {
 
         console.log('replace chain on a sync with ', rootChain)
         blockchain.replaceChain(rootChain)
+      }
+    }
+  )
+
+  request(
+    { url: `${ROOT_NODE_ADDRESS}/api/transaction-pool-map` },
+    (error, response, body) => {
+      if (!error && response.statusCode === 200) {
+        const rootTransactionPoolMap = JSON.parse(body)
+
+        console.log(
+          'replace tranasctionPoolMap on a sync with',
+          rootTransactionPoolMap
+        )
+        // set as the new transactionPoolMap data
+        transactionPool.setMap(rootTransactionPoolMap)
       }
     }
   )
@@ -142,6 +160,6 @@ app.listen(PORT, () => {
    * verified chain from the rootNode.
    */
   if (PORT !== DEFAULT_PORT) {
-    syncChains()
+    syncWithRootState()
   }
 })
