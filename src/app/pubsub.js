@@ -10,11 +10,13 @@ const redis = require('redis')
 const CHANNELS = {
   TEST: 'TEST',
   BLOCKCHAIN: 'BLOCKCHAIN',
+  TRANSACTION: 'TRANSACTION',
 }
 
 class PubSub {
-  constructor({ blockchain }) {
+  constructor({ blockchain, transactionPool }) {
     this.blockchain = blockchain
+    this.transactionPool = transactionPool
     this.publisher = redis.createClient()
     this.subscriber = redis.createClient()
 
@@ -31,15 +33,24 @@ class PubSub {
    * We then check the channel is the blockchain channel and
    * if it is then the blockchain.replaceChain function is
    * called and the parsed message is added to the chain.
-   * @param {*} channel
-   * @param {*} message
+   *
+   * Moved to a switch for ease in future additons to
+   * channels.operations. New addition equals a new
+   * switch case.
    */
   handleMessage(channel, message) {
     console.log(`message received: Channel: ${channel} - message: ${message}`)
     const parsedMessage = JSON.parse(message)
 
-    if (channel === CHANNELS.BLOCKCHAIN) {
-      this.blockchain.replaceChain(parsedMessage)
+    switch (channel) {
+      case CHANNELS.BLOCKCHAIN:
+        this.blockchain.replaceChain(parsedMessage)
+        break
+      case CHANNELS.TRANSACTION:
+        this.transactionPool.setTransaction(parsedMessage)
+        break
+      default:
+        return
     }
   }
 
@@ -82,6 +93,18 @@ class PubSub {
     this.publish({
       channel: CHANNELS.BLOCKCHAIN,
       message: JSON.stringify(this.blockchain.chain),
+    })
+  }
+
+  /**
+   * broadcasts a new transaction
+   * Accepts a transaction and calls the publish.
+   * message has to be json.strinified
+   */
+  broadcastTransaction(transaction) {
+    this.publish({
+      channel: CHANNELS.TRANSACTION,
+      message: JSON.stringify(transaction),
     })
   }
 }
