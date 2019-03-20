@@ -54,6 +54,18 @@ class Block {
     })
   }
 
+  /**
+   * The blockchain difficulty is a fluctuating value.
+   * It is based on the time taken between last and
+   * new blocks being mined and measured agains the
+   * MINE_RATE which is a configuration setting of
+   * the system/network.
+   * Controls are in place to prevent large jumps
+   * upward or downward. To enable this control the
+   * difficulty of the the last block mined is measured
+   * against timestamps and mining rate and adjusted
+   * in single increments or decrements.
+   */
   static adjustDifficulty({ originalBlock, timestamp }) {
     const { difficulty } = originalBlock
 
