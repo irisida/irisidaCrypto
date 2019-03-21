@@ -26,6 +26,18 @@ class Block {
     return new this(GENESIS_DATA)
   }
 
+  /**
+   * Creates a new block.
+   * A new block is created by taking in the
+   * lastBlock of the chain and the data that
+   * is to make up the new block.
+   * It creates a new block by creating a hash
+   * of the combined properties of a block
+   * and will repeatedly recalculate the hash
+   * up to the difficulty length.
+   * Once confirmed (mined) the block is
+   * returned.
+   */
   static mineBlock({ lastBlock, data }) {
     let hash, timestamp
     const lastHash = lastBlock.hash
