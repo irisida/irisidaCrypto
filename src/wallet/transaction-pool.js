@@ -10,6 +10,31 @@ class TransactionPool {
   }
 
   /**
+   * Clear the transactionPool
+   */
+  clear() {
+    this.transactionMap = {}
+  }
+
+  /**
+   * A controlled clearing of the chain to
+   * avoid removing local transactions that
+   * are not part of a transferred chain.
+   */
+  clearBlockchainTransactions({ chain }) {
+    // start at 1 to avoid the genesis block
+    for (let i = 1; i < chain.length; i++) {
+      const block = chain[i]
+
+      for (let transaction of block.data) {
+        if (this.transactionMap[transaction.id]) {
+          delete this.transactionMap[transaction.id]
+        }
+      }
+    }
+  }
+
+  /**
    * Adds a new transaction to the transactionMap
    * object of the transactionPool.
    */
