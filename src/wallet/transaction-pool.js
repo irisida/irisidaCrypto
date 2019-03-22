@@ -11,6 +11,8 @@ class TransactionPool {
 
   /**
    * Clear the transactionPool
+   * this is the final step of the mineTransactions
+   * method.
    */
   clear() {
     this.transactionMap = {}
@@ -20,6 +22,11 @@ class TransactionPool {
    * A controlled clearing of the chain to
    * avoid removing local transactions that
    * are not part of a transferred chain.
+   * This more generic clearing method is
+   * what peers will call when accepting a
+   * new blockchain in to replace the
+   * existing blockchain.
+   * It is a safer method.
    */
   clearBlockchainTransactions({ chain }) {
     // start at 1 to avoid the genesis block
