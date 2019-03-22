@@ -4,6 +4,10 @@ const STARTING_BALANCE = 1000
 const REWARD_INPUT = { address: '*authorised-reward*' }
 const MINING_REWARD = 10
 
+/**
+ * defines the genesis block of a
+ * blockchain system.
+ */
 const GENESIS_DATA = {
   timestamp: 1,
   lastHash: '-----------',
