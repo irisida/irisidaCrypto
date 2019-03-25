@@ -15,7 +15,7 @@ class Blockchain {
     this.chain.push(newBlock)
   }
 
-  replaceChain(chain) {
+  replaceChain(chain, onSuccess) {
     /**
      * The business rules behind the chain replacement
      * mechanism are that a chain can only be replaced
@@ -35,6 +35,8 @@ class Blockchain {
       console.error('incoming chain must be valid')
       return
     }
+
+    if (onSuccess) onSuccess()
 
     console.log('replacing chain with ', chain)
     this.chain = chain
