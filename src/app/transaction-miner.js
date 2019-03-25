@@ -1,3 +1,5 @@
+const Transaction = require('../wallet/transaction')
+
 /**
  * Gets the transaction data that will make up
  * a new block from the transactionPool.
@@ -17,10 +19,21 @@ class TransactionMiner {
 
   mineTransactions() {
     // get the transactionPools valid transactions
+    const validTransactions = this.transactionPool.validTransactions()
+
     // generate the miners reward
+    validTransactions.push(
+      Transaction.rewardTransaction({ minerWallet: this.wallet })
+    )
+
     // add a block consisting of the transactions to the blockchain.
+    this.blockchain.addBlock({ data: validTransactions })
+
     // broadcast the updated blockchain
+    this.pubsub.broadcastChain()
+
     // clear the transactionPool
+    this.transactionPool.clear()
   }
 }
 
