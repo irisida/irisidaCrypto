@@ -45,6 +45,7 @@ class Wallet {
    * check the entire chain looking for
    * outputs for the address and add
    * them to the running total.
+   * Needs bolstering
    */
   static calculateBalance({ chain, address }) {
     let outputsTotal = 0
