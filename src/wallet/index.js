@@ -26,12 +26,43 @@ class Wallet {
     return this.keyPair.sign(cryptoHash(data))
   }
 
+  /**
+   * Simple createTransaction method that checks
+   * if a transaction amount exceeds the balance
+   * and if it is not exceeded it then creates
+   * a new transaction.
+   */
   createTransaction({ recipient, amount }) {
     if (amount > this.balance) {
       throw new Error('Amount exceeds balance')
     }
 
     return new Transaction({ senderWallet: this, recipient, amount })
+  }
+
+  /**
+   * claculateBalance should
+   * check the entire chain looking for
+   * outputs for the address and add
+   * them to the running total.
+   * Needs bolstering
+   */
+  static calculateBalance({ chain, address }) {
+    let outputsTotal = 0
+
+    for (let i = 1; i < chain.length; i++) {
+      const block = chain[i]
+
+      for (let transaction of block.data) {
+        const addressOutput = transaction.outputMap[address]
+
+        if (address) {
+          outputsTotal += addressOutput
+        }
+      }
+    }
+
+    return STARTING_BALANCE + outputsTotal
   }
 }
 
