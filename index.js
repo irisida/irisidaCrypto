@@ -118,6 +118,21 @@ app.get('/api/mine-transactions', (req, res) => {
 })
 
 /**
+ *
+ */
+app.get('/api/wallet-info', (req, res) => {
+  const address = wallet.publicKey
+
+  res.json({
+    address,
+    balance: Wallet.calculateBalance({
+      chain: blockchain.chain,
+      address,
+    }),
+  })
+})
+
+/**
  * syncWithRootState
  * Function allows new nodes on the network to sync
  * with the root node which will have the latest/longest
