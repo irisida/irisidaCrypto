@@ -209,6 +209,19 @@ describe('Blockchain', () => {
         })
       })
     })
+
+    describe('and the `validateTransactions` flag is true', () => {
+      it('calls validateTransactionData()', () => {
+        const validateTransactionDataMock = jest.fn()
+
+        blockchain.validTransactionData = validateTransactionDataMock
+
+        newChain.addBlock({ data: 'someDataValue' })
+        blockchain.replaceChain(newChain.chain, true)
+
+        expect(validateTransactionDataMock).toHaveBeenCalled()
+      })
+    })
   })
 
   /**
