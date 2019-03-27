@@ -307,7 +307,6 @@ describe('Blockchain', () => {
           false
         )
         expect(errorMock).toHaveBeenCalled()
-        //expect(errorMock).toHaveBeenCalled()
       })
     })
 
