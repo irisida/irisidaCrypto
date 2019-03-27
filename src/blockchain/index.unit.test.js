@@ -285,6 +285,28 @@ describe('Blockchain', () => {
     // rule 3
     describe('and the transaction data has at least one malformed input', () => {
       it('returns false and logs an error', () => {
+        wallet.balance = 50000
+        const evilOutputMap = {
+          [wallet.publicKey]: 49000,
+          testRecipient: 1000,
+        }
+
+        const evilTransaction = {
+          input: {
+            timestamp: Date.now(),
+            amount: wallet.balance,
+            address: wallet.publicKey,
+            signature: wallet.sign(evilOutputMap),
+          },
+          outputMap: evilOutputMap,
+        }
+
+        newChain.addBlock({ data: [evilTransaction, rewardTransaction] })
+
+        expect(blockchain.validTransactionData({ chain: newChain.chain })).toBe(
+          false
+        )
+        expect(errorMock).toHaveBeenCalled()
         //expect(errorMock).toHaveBeenCalled()
       })
     })
