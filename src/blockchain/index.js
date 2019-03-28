@@ -39,7 +39,7 @@ class Blockchain {
       return
     }
 
-    if (validateTransactions && !this.validTransactionData(chain)) {
+    if (validateTransactions && !this.validTransactionData({ chain })) {
       console.error('The incoming chain has invalid transaction data')
       return
     }
