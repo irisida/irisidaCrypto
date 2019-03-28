@@ -34,7 +34,7 @@ class Blockchain {
       return
     }
 
-    if (!Blockchain.isValidChain(chain)) {
+    if (!Blockchain.isValidChain({ chain })) {
       console.error('incoming chain must be valid')
       return
     }
